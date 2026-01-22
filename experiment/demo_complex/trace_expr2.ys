@@ -1,0 +1,17 @@
+# Test if "_sum2_T + mul1 - mul3" in optimized equals "expr2" in unoptimized
+
+read_verilog -sv generated/unoptimized.sv
+rename ComplexExample gold
+read_verilog -sv generated/optimized.sv
+rename ComplexExample gate
+
+proc
+opt_clean
+equiv_make gold gate equiv_mod
+cd equiv_mod
+
+# Test: expr2_gold == $sub$...$24_Y_gate
+equiv_add \expr2_gold $sub$generated/optimized.sv:31$24_Y_gate
+
+equiv_simple
+equiv_status

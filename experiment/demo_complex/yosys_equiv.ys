@@ -1,0 +1,36 @@
+# =============================================================================
+# Yosys Equivalence Checking: Complex Example with Multiple Multiplications
+# =============================================================================
+#
+# Unoptimized has named signals: mul1, mul2, mul3, mul4, sum1, sum2, diff, expr1, expr2
+# Optimized merges many into expressions: only mul1, mul3 remain separate
+
+# STEP 1: Load both designs (with -sv for SystemVerilog support)
+read_verilog -sv generated/unoptimized.sv
+rename ComplexExample gold
+
+read_verilog -sv generated/optimized.sv
+rename ComplexExample gate
+
+# STEP 2: Prepare
+proc
+opt_clean
+
+# STEP 3: Create equivalence module (matches ports by name)
+equiv_make gold gate equiv_mod
+cd equiv_mod
+
+# STEP 4: Add internal signal equivalence checks
+# Gold signals → Gate signals (manually identified correspondences)
+
+# mul1: a * b (exists in both)
+equiv_add \mul1_gold \mul1_gate
+
+# mul3: a * c (exists in both)
+equiv_add \mul3_gold \mul3_gate
+
+# STEP 5: Prove equivalence
+equiv_simple
+
+# STEP 6: Show results
+equiv_status

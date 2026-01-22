@@ -1,0 +1,37 @@
+# =============================================================================
+# Yosys Equivalence Checking: Unoptimized vs Optimized Verilog
+# =============================================================================
+#
+# This script proves equivalence between:
+#   - generated/unoptimized.sv (gold) - has named internal signals
+#   - generated/optimized.sv (gate)   - signals merged into expressions
+#
+# Demonstrates both PORT and INTERNAL signal equivalence checking.
+
+# STEP 1: Load both designs
+read_verilog generated/unoptimized.sv
+rename Figure5Example gold
+
+read_verilog generated/optimized.sv
+rename Figure5Example gate
+
+# STEP 2: Prepare for equivalence checking
+proc       # Convert processes to netlists
+opt_clean  # Remove unused wires
+
+# STEP 3: Create equivalence module (matches ports by name)
+equiv_make gold gate equiv_mod
+cd equiv_mod
+
+# STEP 4: Add INTERNAL signal equivalence checks
+# After equiv_make, signals get _gold/_gate suffixes
+# Gold: op5_gold              Gate: $mul$..._gate (same computation)
+# Gold: _mapred6_T_3_gold     Gate: $not$..._gate (same computation)
+equiv_add \op5_gold $mul$generated/optimized.sv:14$14_Y_gate
+equiv_add \_mapred6_T_3_gold $not$generated/optimized.sv:14$15_Y_gate
+
+# STEP 5: Prove all equivalences using SAT
+equiv_induct
+
+# STEP 6: Show results
+equiv_status

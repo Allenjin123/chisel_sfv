@@ -1,0 +1,47 @@
+# =============================================================================
+# Yosys Sequential Equivalence Checking: FIFO Example
+# =============================================================================
+#
+# This example is more complex than the combinational one:
+#   - Has registers (stateReg, dataReg, shadowReg)
+#   - Has module hierarchy (DoubleBufferFifoTop → DoubleBufferFifo → DoubleBuffer)
+#   - Requires equiv_induct for sequential reasoning
+
+# STEP 1: Load both designs
+read_verilog generated/unoptimized.sv
+rename DoubleBuffer gold_buf
+rename DoubleBufferFifo gold_fifo
+rename DoubleBufferFifoTop gold_top
+
+read_verilog generated/optimized.sv
+rename DoubleBuffer gate_buf
+rename DoubleBufferFifo gate_fifo
+rename DoubleBufferFifoTop gate_top
+
+# STEP 2: Prepare - flatten hierarchy for equivalence checking
+proc
+flatten gold_top
+flatten gate_top
+opt_clean
+
+# STEP 3: Create equivalence module
+equiv_make gold_top gate_top equiv_mod
+cd equiv_mod
+
+# STEP 4: Show what signals were matched
+log
+log === Signals matched by equiv_make ===
+select -list t:$equiv
+
+# STEP 5: For SEQUENTIAL circuits, use equiv_induct
+log
+log === Proving equivalence (sequential - using induction) ===
+equiv_induct
+
+# STEP 6: Try equiv_simple for any remaining
+equiv_simple
+
+# STEP 7: Show final status
+log
+log === Final Status ===
+equiv_status

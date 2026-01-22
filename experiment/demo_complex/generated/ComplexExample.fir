@@ -1,0 +1,28 @@
+FIRRTL version 3.3.0
+circuit ComplexExample :
+  module ComplexExample : @[src/main/scala/ComplexExample.scala 8:7]
+    input clock : Clock @[src/main/scala/ComplexExample.scala 8:7]
+    input reset : UInt<1> @[src/main/scala/ComplexExample.scala 8:7]
+    output io : { flip a : UInt<8>, flip b : UInt<8>, flip c : UInt<8>, flip d : UInt<8>, flip sel : UInt<2>, out : UInt<16>} @[src/main/scala/ComplexExample.scala 9:14]
+
+    node mul1 = mul(io.a, io.b) @[src/main/scala/ComplexExample.scala 19:19]
+    node mul2 = mul(io.c, io.d) @[src/main/scala/ComplexExample.scala 20:19]
+    node mul3 = mul(io.a, io.c) @[src/main/scala/ComplexExample.scala 21:19]
+    node mul4 = mul(io.b, io.d) @[src/main/scala/ComplexExample.scala 22:19]
+    node _sum1_T = add(mul1, mul2) @[src/main/scala/ComplexExample.scala 25:19]
+    node sum1 = tail(_sum1_T, 1) @[src/main/scala/ComplexExample.scala 25:19]
+    node _sum2_T = add(mul3, mul4) @[src/main/scala/ComplexExample.scala 26:19]
+    node sum2 = tail(_sum2_T, 1) @[src/main/scala/ComplexExample.scala 26:19]
+    node _diff_T = sub(mul1, mul3) @[src/main/scala/ComplexExample.scala 27:19]
+    node diff = tail(_diff_T, 1) @[src/main/scala/ComplexExample.scala 27:19]
+    node expr1 = mul(sum1, UInt<2>(0h2)) @[src/main/scala/ComplexExample.scala 30:20]
+    node _expr2_T = add(sum2, diff) @[src/main/scala/ComplexExample.scala 31:20]
+    node expr2 = tail(_expr2_T, 1) @[src/main/scala/ComplexExample.scala 31:20]
+    node _result_T = eq(UInt<1>(0h1), io.sel) @[src/main/scala/ComplexExample.scala 34:38]
+    node _result_T_1 = mux(_result_T, sum2, sum1) @[src/main/scala/ComplexExample.scala 34:38]
+    node _result_T_2 = eq(UInt<2>(0h2), io.sel) @[src/main/scala/ComplexExample.scala 34:38]
+    node _result_T_3 = mux(_result_T_2, expr1, _result_T_1) @[src/main/scala/ComplexExample.scala 34:38]
+    node _result_T_4 = eq(UInt<2>(0h3), io.sel) @[src/main/scala/ComplexExample.scala 34:38]
+    node result = mux(_result_T_4, expr2, _result_T_3) @[src/main/scala/ComplexExample.scala 34:38]
+    connect io.out, result @[src/main/scala/ComplexExample.scala 41:10]
+

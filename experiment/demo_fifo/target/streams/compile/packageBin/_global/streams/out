@@ -1,0 +1,21 @@
+[debug] Packaging /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/fifo-demo_2.13-0.1.0.jar ...
+[debug] Input file mappings:
+[debug] 	fifo
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo
+[debug] 	fifo/DoubleBufferFifoTop.class
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo/DoubleBufferFifoTop.class
+[debug] 	fifo/GenerateFirrtl.class
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo/GenerateFirrtl.class
+[debug] 	fifo/DoubleBufferFifo.class
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo/DoubleBufferFifo.class
+[debug] 	fifo/GenerateFirrtl$delayedInit$body.class
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo/GenerateFirrtl$delayedInit$body.class
+[debug] 	fifo/DoubleBufferFifo$DoubleBuffer.class
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo/DoubleBufferFifo$DoubleBuffer.class
+[debug] 	fifo/GenerateFirrtl$.class
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo/GenerateFirrtl$.class
+[debug] 	fifo/FifoIO.class
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo/FifoIO.class
+[debug] 	fifo/Fifo.class
+[debug] 	  /home/allenjin/Codes/chisel_sfv/experiment/demo_fifo/target/scala-2.13/classes/fifo/Fifo.class
+[debug] Done packaging.
