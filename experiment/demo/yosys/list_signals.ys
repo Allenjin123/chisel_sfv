@@ -1,0 +1,21 @@
+# Read the SystemVerilog file
+read_verilog -sv generated/optimized.sv
+
+# Elaborate the design
+hierarchy -check -top Figure5Example
+
+# Run synthesis to generate intermediate signals
+proc; opt; memory; opt; fsm; opt; techmap; opt
+
+# List all wires (intermediate signals)
+ls
+cd Figure5Example
+
+# Show statistics including wire information
+stat
+
+# List all signals with details
+show -format dot -prefix signals
+
+# Print all wires in the module
+select -list w:*

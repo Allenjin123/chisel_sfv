@@ -3,9 +3,8 @@ papers/
 experiment/firtool-*
 
 # Scala/SBT build artifacts
-target/
-project/target/
-project/project/
+**/target/
+**/project/target/
 *.class
 *.jar
 *.log

@@ -1,0 +1,32 @@
+# =============================================================================
+# Expression Tracing: Figure 5 Example
+# =============================================================================
+#
+# Goal: Trace which signal in the unoptimized version corresponds to
+#       specific expressions in the optimized version
+#
+# The optimized version has this expression:
+#   {8'hFF, ~io_in0} + {8'hFF, ~io_in1} + {8'hFF, ~io_in4} + ~({8'h0, io_in0} * {8'h0, io_in8})
+#
+# This should correspond to 'mapred6' in the unoptimized version
+
+read_verilog -sv generated/unoptimized.sv
+rename Figure5Example gold
+read_verilog -sv generated/optimized.sv
+rename Figure5Example gate
+
+proc
+opt_clean
+equiv_make gold gate equiv_mod
+cd equiv_mod
+
+# Trace: Which unoptimized signal does the optimized expression correspond to?
+# Answer: mapred6 in unoptimized == io_out0 in optimized
+equiv_add \mapred6_gold \io_out0_gate
+
+# We could also trace intermediate expressions if they existed in optimized
+# For example, if optimized had kept 'op5' (the multiplication):
+# equiv_add \op5_gold \<some_gate_signal>
+
+equiv_simple
+equiv_status

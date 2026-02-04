@@ -1,0 +1,15 @@
+# Read the SystemVerilog file
+read_verilog -sv generated/optimized.sv
+
+# Elaborate the design
+hierarchy -check -top Figure5Example
+
+# Run basic synthesis steps
+proc; opt
+
+# Select the top module
+cd Figure5Example
+
+# Print all wires (intermediate signals)
+select w:*
+select -list
