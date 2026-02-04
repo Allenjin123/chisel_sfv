@@ -1,3 +1,32 @@
 papers/
 *.pdf
 experiment/firtool-*
+
+# Scala/SBT build artifacts
+target/
+project/target/
+project/project/
+*.class
+*.jar
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.bsp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Temporary files
+*.tmp
+*.swp
+*~
