@@ -1,0 +1,44 @@
+# =============================================================================
+# Expression Tracing: FIFO Example
+# =============================================================================
+#
+# Goal: Trace which signals in the unoptimized version correspond to
+#       specific expressions or signals in the optimized version
+#
+# This FIFO example has registers (sequential logic), so we trace:
+#   - State registers (stateReg)
+#   - Data registers (dataReg, shadowReg)
+#   - Control signals (io_enq_ready, io_deq_valid)
+
+read_verilog generated/unoptimized.sv
+rename DoubleBuffer gold_buf
+rename DoubleBufferFifo gold_fifo
+rename DoubleBufferFifoTop gold_top
+
+read_verilog generated/optimized.sv
+rename DoubleBuffer gate_buf
+rename DoubleBufferFifo gate_fifo
+rename DoubleBufferFifoTop gate_top
+
+proc
+flatten gold_top
+flatten gate_top
+opt_clean
+equiv_make gold_top gate_top equiv_mod
+cd equiv_mod
+
+# Trace: Which unoptimized signals correspond to optimized ones?
+# For sequential circuits, we can trace key state and control signals
+# The actual signal names depend on how optimization preserves them
+
+# Example traces (uncomment if specific signals exist):
+# equiv_add \stateReg_gold \stateReg_gate
+# equiv_add \dataReg_gold \dataReg_gate
+# equiv_add \_io_enq_ready_T_gold \_io_enq_ready_T_gate
+
+# For this FIFO, the main equivalence is at the module level
+# Individual internal signals may be restructured by optimization
+
+equiv_induct
+equiv_simple
+equiv_status
