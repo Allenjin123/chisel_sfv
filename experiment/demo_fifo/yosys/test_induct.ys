@@ -1,0 +1,51 @@
+# === Unbounded equivalence check: k-induction (-tempinduct) ===
+# Proves register + output equivalence for ALL reachable states, not just
+# bounded N cycles from reset. Uses temporal induction:
+#   Base case:  from init state, property holds for k steps
+#   Induction:  if property held for k steps from arbitrary state, it holds at step k+1
+#
+# Key insight: proving ALL register equalities simultaneously makes the
+# induction hypothesis strong enough. Identical state + identical inputs =>
+# identical next state, so register equality is an inductive invariant.
+#
+# For individual wire proofs, strengthen the hypothesis by proving them
+# alongside the full register equivalence (-prove trigger 0).
+
+read_verilog -formal ../generated/unoptimized.sv
+prep -flatten -top DoubleBuffer
+rename -top gold
+clk2fflogic
+design -stash gold
+
+read_verilog -formal ../generated/optimized.sv
+prep -flatten -top DoubleBuffer
+rename -top gate
+clk2fflogic
+
+design -copy-from gold -as gold gold
+# Claude adds it
+# expose -dff -shared gold gate
+miter -equiv -flatten -make_outputs gold gate miter
+# miter add a trigger signal, which will be 1 once a mismatch in the output is detected
+hierarchy -top miter
+
+# --- Unbounded proof: all registers + outputs ---
+# Succeeds at induction length 9.
+sat -tempinduct -tempinduct-skip 1 -prove trigger 0 -set-init-zero -seq 2 miter
+#    -tempinduct-skip <N>
+#        Skip the first <N> steps of the induction proof.
+#
+#        note: this will assume that the base case holds for <N> steps.
+#        this must be proven independently with "-tempinduct-baseonly
+#        -maxsteps <N>". Use -initsteps if you just want to set a
+#        minimal induction length.
+
+
+# --- Unbounded proof: individual wire + registers (strengthened) ---
+# The wire proof alone would hang (too weak hypothesis).
+# Adding -prove trigger 0 strengthens the induction with register equality.
+# Equivalent pair — SHOULD PASS:
+sat -tempinduct -tempinduct-skip 1 -prove trigger 0 -prove \gold._io_deq_valid_T_1 $flatten\gate.$eq$../generated/optimized.sv:21$103_Y -set-init-zero -seq 2 miter
+
+# Non-equivalent pair — SHOULD FAIL at base case:
+sat -tempinduct -tempinduct-skip 1 -prove trigger 0 -prove \gold._GEN_5 \gate._GEN_0 -set-init-zero -seq 2 miter
