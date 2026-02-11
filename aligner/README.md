@@ -70,6 +70,10 @@ python3 trace_signal.py \
   --gate ../experiment/demo_fifo/generated/optimized.sv \
   --gold ../experiment/demo_fifo/generated/unoptimized.sv \
   --loc 21.23-39 --bounded
+
+
+# Comb only
+python3 trace_signal.py --gate ../experiment/demo_verilog/generated/optimized.sv --gold ../experiment/demo_verilog/generated/unoptimized.sv --loc 14.9-40
 ```
 
 ## Prerequisites

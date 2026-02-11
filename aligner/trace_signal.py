@@ -42,18 +42,40 @@ def get_other_modules(verilog_file, target_module):
 
 
 def get_source_location(signal_name, verilog_file):
-    """Extract source location annotation for a signal from Verilog comments."""
+    """Extract source location annotation for a signal from Verilog comments.
+
+    Handles two annotation formats:
+      - @[src/main/scala/Fifo.scala:46:20]     (CIRCT wrapInAtSquareBracket)
+      - // src/main/scala/Fifo.scala:46:20      (CIRCT plain comment)
+    """
     with open(verilog_file, 'r') as f:
         for line in f:
             if re.search(rf'\b(wire|reg)\b.*\b{re.escape(signal_name)}\b', line) and '//' in line:
-                match = re.search(r'@\[([^\]]+)\]', line)
-                if match:
-                    return match.group(1)
-            # Also check assign statements
+                loc = _extract_location(line)
+                if loc:
+                    return loc
             if re.search(rf'\bassign\b\s+{re.escape(signal_name)}\b', line) and '//' in line:
-                match = re.search(r'@\[([^\]]+)\]', line)
-                if match:
-                    return match.group(1)
+                loc = _extract_location(line)
+                if loc:
+                    return loc
+    return None
+
+
+def _extract_location(line):
+    """Extract source location from a Verilog comment line.
+
+    Supports:
+      // @[src/main/scala/Fifo.scala:46:20]
+      // src/main/scala/Fifo.scala:46:20
+    """
+    # Try @[...] format first
+    match = re.search(r'@\[([^\]]+)\]', line)
+    if match:
+        return match.group(1)
+    # Try plain comment format: // <path>:<line>:<col>
+    match = re.search(r'//\s*(.+\.scala:\d+.*)$', line)
+    if match:
+        return match.group(1).strip()
     return None
 
 
