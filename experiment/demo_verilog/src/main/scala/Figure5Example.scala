@@ -13,16 +13,17 @@ class Figure5Example extends Module {
     val out0 = Output(UInt(16.W))
   })
 
-  // Intermediate signals (op0, op1, op4 from other operations)
+  // Intermediate signals (op0, op1, op2, op4 from other operations)
   val op0 = io.in0
-  val op1 = io.in1
-  val op4 = io.in4
+  val op1 = io.in8*io.in4
+  val op2 = io.in1+io.in4
+  val op4 = io.in4*io.in1
 
   // op5 := io.in0 * io.in8
   val op5 = io.in0 * io.in8
 
-  // mapred6 := VecInit(op0,op1,op4,op5).map((x) => (~x)).reduce(_ + _)
-  val mapred6 = VecInit(op0, op1, op4, op5).map((x) => (~x)).reduce(_ + _)
+  // mapred6 := VecInit(op0,op1,op2,op4,op5).map((x) => (~x)).reduce(_ + _)
+  val mapred6 = VecInit(op0, op1, op2, op4, op5).map((x) => (~x)).reduce(_ + _)
 
   // io.out0 := mapred6
   io.out0 := mapred6

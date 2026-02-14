@@ -46,21 +46,32 @@ chisel_sfv/
 ### 1. Generate Verilog from Chisel
 
 ```bash
+export PATH="/home/allenjin/Codes/chisel_sfv/experiment/firtool-1.138.0/bin:$PATH"
+
 cd experiment/demo_fifo
 sbt "runMain fifo.GenerateFirrtl"
 
 # Unoptimized (preserves all intermediate signals + source annotations)
+# maximumNumberOfTermsPerExpression=1
 firtool generated/DoubleBufferFifo.fir \
   --disable-all-randomization \
-  --lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket \
+  --lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket,maximumNumberOfTermsPerExpression=1 \
   --disable-opt --preserve-values=all \
   -o generated/unoptimized.sv
 
+firtool generated/Figure5Example.fir \
+    --disable-all-randomization \
+    --lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket,maximumNumberOfTermsPerExpression=1 \
+    --disable-opt \
+    --preserve-values=all \
+    -o generated/unoptimized.sv
+
 # Optimized
-firtool generated/DoubleBufferFifo.fir \
-  --disable-all-randomization \
-  --lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket \
-  -o generated/optimized.sv
+firtool generated/DoubleBufferFifo.fir -o generated/optimized.sv
+
+firtool generated/Figure5Example.fir -o generated/optimized.sv
+
+
 ```
 
 ### 2. Trace a Signal
@@ -73,6 +84,12 @@ python3 trace_signal.py \
   --gate ../experiment/demo_fifo/generated/optimized.sv \
   --gold ../experiment/demo_fifo/generated/unoptimized.sv \
   --loc 21.23-39
+
+
+python3 trace_signal.py \
+  --gate ../experiment/demo_verilog/generated/optimized.sv \
+  --gold ../experiment/demo_verilog/generated/unoptimized.sv \
+  --loc 15.9-40
 ```
 
 Output:
