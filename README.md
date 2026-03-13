@@ -69,8 +69,7 @@ firtool generated/Figure5Example.fir \
 # Optimized
 firtool generated/DoubleBufferFifo.fir -o generated/optimized.sv
 
-firtool generated/Figure5Example.fir -o generated/optimized.sv
-
+firtool generated/Figure5Example.fir --lowering-options=maximumNumberOfTermsPerExpression=1 -o generated/optimized.sv
 
 ```
 
@@ -150,3 +149,6 @@ The fix: prove the target signal **alongside register equivalence** (`-prove tri
 - Python 3.6+
 - [firtool](https://github.com/llvm/circt) (CIRCT) for generating Verilog from Chisel
 - sbt + Chisel 6.5.0 for the example projects
+
+
+Do not use any tool, can you tell me which multiplier, wire [15:0] _GEN_1 = {8'h0, io_in1};	// @[src/main/scala/Figure5Example.scala:18:19, :20:19] in /home/allenjin/Codes/chisel_sfv/experiment/demo_verilog/generated/optimized_maxTerm.sv correspond to in /home/allenjin/Codes/chisel_sfv/experiment/demo_verilog/src/main/scala/Figure5Example.scala

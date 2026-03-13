@@ -13,6 +13,7 @@ module Figure5Example(	// src/main/scala/Figure5Example.scala:7:7
   wire [15:0] _GEN_0 = {8'h0, io_in4};	// src/main/scala/Figure5Example.scala:18:19
   assign io_out0 =
     {8'hFF, ~io_in0} + ~(_GEN * _GEN_0) + {8'hFF, ~(io_in1 + io_in4)}
-    + ~(_GEN_0 * {8'h0, io_in1}) + ~({8'h0, io_in0} * _GEN);	// src/main/scala/Figure5Example.scala:7:7, :18:19, :19:19, :20:19, :23:20, :26:{62,76}
+    + ~(_GEN_0 * {8'h0, io_in1}) + ~({8'h0, io_in0} * _GEN);	
+    // src/main/scala/Figure5Example.scala:7:7, :18:19, :19:19, :20:19, :23:20, :26:{62,76}
 endmodule
 
